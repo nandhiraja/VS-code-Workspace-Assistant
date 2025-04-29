@@ -1,0 +1,64 @@
+{
+    "name": "chat-sidebar",
+    "displayName": "Chat Sidebar",
+    "description": "A simple VS Code chat extension",
+    "version": "1.0.0",
+    "publisher": "Nandhi",
+    "engines": {
+        "vscode": "^1.75.0"
+    },
+    "categories": [
+        "Other"
+    ],
+    "contributes": {
+        "viewsContainers": {
+            "activitybar": [
+                {
+                    "id": "chat-sidebar",
+                    "title": "Chat",
+                    "icon": "./resources/chat.svg"
+                }
+            ]
+        },
+        "views": {
+            "chat-sidebar": [
+                {
+                    "type": "webview",
+                    "id": "Nandhi",
+                    "name": "Chat Messages"
+                }
+            ]
+        },
+        "commands": [
+            {
+                "command": "Nandhi",
+                "title": "Chat: Add Message"
+            }
+        ]
+    },
+    "activationEvents": [
+        "*"
+    ],
+    "main": "src/extension.js",
+    "scripts": {
+        "vscode:prepublish": "npm run compile",
+        "watch": "tsc -w"
+    },
+    "dependencies": {
+        "@dqbd/tiktoken": "^1.0.21",
+        "@google/genai": "^0.10.0",
+        "@lancedb/lancedb": "^0.12.0",
+        "@themaximalist/vectordb.js": "^0.1.2",
+        "@xenova/transformers": "^2.17.2",
+        "chromadb": "^2.2.0",
+        "fs": "^0.0.1-security",
+        "marked": "^15.0.8",
+        "ollama": "^0.5.14",
+        "tree-sitter": "^0.22.4",
+        "tree-sitter-html": "^0.23.2",
+        "tree-sitter-javascript": "^0.23.1",
+        "tree-sitter-json": "^0.24.8",
+        "tree-sitter-python": "^0.23.6",
+        "vectordb": "^0.18.2"
+    }
+}
