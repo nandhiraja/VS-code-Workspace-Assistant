@@ -3,6 +3,7 @@ const { default: ollama } = require('ollama');
 const { GoogleGenAI }= require( "@google/genai");
 
 const ai = new GoogleGenAI({ apiKey: "AIzaSyDKUpuq9tyeTV7Ei7cJGhs8euA20UBKcnc" });
+const current_ai = new GoogleGenAI ({apiKey:"AIzaSyB10HtW4gkyKHE0ydEaQKVQJEAv46CNUX8"})
 
 var history_query_answer = {
   "user": "",
@@ -31,13 +32,92 @@ async function ollama_flow_response(query, relate_data, CurrentFileAcess, currne
   
   console.log("Here is the data  : ",relate_data)
  
-        
+  const prompt = `  
+  Strict Formatting, Syntax, and Styling Rules:
+  ** Restrictions**  FOLLOW THE RULES ELSE LEAD TO ERROR: 
+         --No Code Syntax: Do not include any programming language keywords (e.g., if, else, function, const, class).
+         --No Code Snippets: Do not provide examples of code in any programming language.
+         --Focus on Flow: Describe the desired process or structure in plain language, not code.
+         --Simple Language Only: Use straightforward, descriptive language to explain the flowchart elements and their connections.
 
-         const response = await ai.models.generateContent({
+  Output Format: You will ONLY provide the entire Mermaid flowchart code '. This string must contain the 'graph TD' or 'graph LR' declaration, followed by node definitions with inline 'style' attributes, and then edge connections. Do not include any extra text or explanations.
+  
+  Flowchart Direction: The generated flowchart should be valid for both 'graph TD' (Top-Down) and 'graph LR' (Left-to-Right) directions. Ensure the logic and connections work correctly regardless of the orientation.
+  
+  Node Definition with Inline Style: Define nodes with clear IDs and descriptive labels enclosed in square brackets '[]'. Apply basic styling directly to nodes using the 'style' keyword followed by the node ID and then the CSS properties. For example: 'style A fill:#f9f,stroke:#333,stroke-width:2px'. Apply relevant 'fill', 'stroke', and 'stroke-width' styles to different types of nodes (start, process, decision, error, end, etc.).
+  
+  Connector Syntax: Use the correct connector syntax for directed edges (e.g., '-->', '-- Yes -->', '-- No -->').  avoid use of '() {} [] in  prompt area' this is mermaid syntax if worngly use i hit error
+  
+  Decision Nodes: Represent decision points with curly braces '{}'. Apply inline 'style' as needed.
+  
+  Consistent Syntax: Ensure every line of the Mermaid code follows the official Mermaid syntax rules precisely.
+  
+  Complete and Logical Flow: The generated flowchart must represent a complete and logical flow based on the query.
+
+###  example of flowchart:   // get idea form this code , this code only not produce any errors, it works well , keep this model as example
+1]  
+           graph TD
+             User["User Input"] --> InputFunction["Input Function"]    
+             InputFunction --> Decision["Check Name"]
+             Decision --> YesCase["Yes Case (Nandhi)"]
+             Decision --> NoCase["No Case (New Friend)"]
+             YesCase --> Output1["Welcome Nandhi"]
+             NoCase --> Output2["Welcome, my new Friend ${"user_name"}"]
+             InputFunction --> DemoFunction["Demo Function"]
+             DemoFunction --> Output3["Display numbers 0-9"]
+             User["User Input"] --> OtherInputsFunction["Other Inputs Function"]
+             OtherInputsFunction --> InquirerPrompt["Inquirer Prompt"]
+             InquirerPrompt --> Decision2["Check Name and Age"]
+             Decision2 --> Output4["Display name and age"]
+             User["User Input"] --> CommandLineInput["Command Line Input Function"]
+             CommandLineInput --> ExitFunction["Exit Process Function"]
+  
+             
+
+ 2]
+   graph LR
+            A[Read User Input] --> B[Validate Name]
+            B -- if name is valid --> C[Format Name]
+            B -- else --> D[Error Handling]
+            C --> E[Capitalized Name]
+            D --> F[Error: Invalid Name]
+            C --> G[Generate Greeting]
+            G --> H[Display Message]
+            A --> I[Read Age Input]
+            I --> J[Validate Age]
+            J --> K[Age Validation Error]
+            I --> L[Calculate Age]
+            L --> M[Final Message Generation]
+            M --> N[Log Final Message]
+        
+            style B fill:#cccccc,stroke:#333,stroke-width:2px
+            style C fill:#cccccc,stroke:#333,stroke-width:2px
+            style D fill:#ffcccc,stroke:#333,stroke-width:2px
+            style E fill:#cc99cc,stroke:#333,stroke-width:2px
+            style F fill:#ffeeee,stroke:#333,stroke-width:2px
+            style G fill:#66cccc,stroke:#333,stroke-width:2px
+            style H fill:#c6f8e6,stroke:#333,stroke-width:2px
+            style I fill:#cccccc,stroke:#333,stroke-width:2px
+            style J fill:#ff99cc,stroke:#333,stroke-width:2px
+            style K fill:#ffeeee,stroke:#333,stroke-width:2px
+            style L fill:#66ccff,stroke:#333,stroke-width:2px
+            style M fill:#c6f8ee,stroke:#333,stroke-width:2px
+            style N fill:#c6f8e6,stroke:#333,stroke-width:2px
+   
+ Task:
+  
+   ## Important Note:   
+        Output ONLY the Mermaid code string. **Important** - The  label  or promt  are must  be inside  " " -  quotes enclose with double quotes eg :[" hai('hello')"]  Inside double use single quotes
+  Given your success with the inline 'style' approach, this revised prompt should guide the LLM to produce code that renders correctly with the desired colors.
+ **Ensure Memaid syntax is correct**  and that the flowchart is visually clear and easy to understand.
+
+  `;
+
+         const response = await current_ai.models.generateContent({
           model: "gemini-2.0-flash",
           contents: `Related data context: ${relate_data} \n\n User Query: ${query.slice(9, query.length)}`,
           config: {
-            systemInstruction: `Task: Generate a valid Mermaid flowchart ('graph TD' or 'graph LR') with inline node styles based on the workflow described in the 'Query' and 'Code Context'. 
+            systemInstruction: `Task: Generate a valid Mermaid flowchart ('graph TD' or 'graph LR') with inline node styles based on the workflow described in the 'Query' and 'Code Context' Always try to generate graph for Context Data provide to you.  
                                Follow the structure and styling method demonstrated in the provided examples (1 and 2). 
                                Ensure correct Mermaid syntax for nodes, connections, and inline 'style' attributes (fill, stroke, stroke-width). 
                                Output ONLY the Mermaid code string. **Important** - The  label  or promt  are must  be inside  " " -  quotes enclose with double quotes eg :[" hai('hello')"]  Inside double use single quotes`,
@@ -47,8 +127,24 @@ async function ollama_flow_response(query, relate_data, CurrentFileAcess, currne
 
 
 
+
     console.log(response.text);
     return response.text;
+
+
+
+
+        // const response = await ollama.chat({
+        //   model: 'llama3.2:1b',  //gemma3:4b   mistral:7b-instruct-q2_K  // qwen2.5:0.5b
+        //   stream: false,
+
+        // messages: [{role : "System" ,content :prompt},
+        //   { role: 'user', content:  `Related data context: ${relate_data} \n\n User Query: ${query}` }]
+        // });
+      
+        // console.log(response.message.content)
+        // return response.message.content;
+
 
 
 
@@ -188,7 +284,7 @@ async function* ollama_response(query, relate_data, CurrentFileAcess, currnetMod
             ;
 
 
-           const response = await ai.models.generateContentStream({
+           const response = await current_ai.models.generateContentStream({
             model: "gemini-2.0-flash",
             contents: `last 2 convo history : ${JSON.stringify(history)} \n\n Related data context: ${relate_data} \n\n User Query: ${query}`,
             config: {
@@ -261,6 +357,9 @@ async function* ollama_response(query, relate_data, CurrentFileAcess, currnetMod
 
     else if (CurrentFileAcess == false) {
         console.log("Generating....!! Please Wait  : code Mode");
+
+
+        console.log("#####################################  :::: The RAG Data  is ::: ##########################################")
 
         const RagPrompt = `
                                     You are a highly intelligent and focused **code assistant** integrated into a VS Code environment. You have current workspace datas
@@ -460,7 +559,8 @@ async function* ollama_response(query, relate_data, CurrentFileAcess, currnetMod
         //     model: 'llama3.2:latest',  //qwen2.5:0.5b     llama3.2:latest   qwen2.5-coder:7b
         //     stream: true,
 
-        //     messages: [{role : "System" ,content :CurrentFileLLmprompt },{ role: 'user', content:  `Related data context: ${relate_data} \n\n User Query: ${query}` }]
+            // messages: [{role : "System" ,content :CurrentFileLLmprompt },
+            //             { role: 'user', content:  `Related data context: ${relate_data} \n\n User Query: ${query}` }]
         // });
 
 

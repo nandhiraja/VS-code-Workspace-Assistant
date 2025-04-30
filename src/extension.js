@@ -1,10 +1,10 @@
 
 const vscode = require("vscode");
 const path = require("path");
-const { getAns ,del_collection } =require('./Emberding');
+const { getAns ,del_collection } =require('./Embedding');
 const chokidar = require('chokidar');
 const {ollama_response ,ollama_flow_response} = require('./LLM _Response')
-const  backend = require("./backend.js");
+const  backend = require("./RAG_process.js");
 
 
 
@@ -21,7 +21,7 @@ const  backend = require("./backend.js");
 function activate(context) {
 
 
-    vscode.window.registerWebviewViewProvider("Nandhi",{
+    vscode.window.registerWebviewViewProvider("Code_Assitent",{
       resolveWebviewView(webviewView) { 
 
         webviewView.webview.options = {
@@ -35,7 +35,7 @@ function activate(context) {
  
         console.log("\n  ~~~~~~~~~~~~~~~~~~~~~~~~~~:::::::::  Page get IntializeD :::::::::::~~~~~~~~~~~~~~~~~~~~~~~~~~~~ \n");
    
-        const scriptPath = vscode.Uri.file(path.join(context.extensionPath, "src", "frontui.js"));
+        const scriptPath = vscode.Uri.file(path.join(context.extensionPath, "src", "FrontEnd_UI.js"));
         const scriptUri = webviewView.webview.asWebviewUri(scriptPath);
 
 
@@ -131,10 +131,9 @@ function activate(context) {
                    });
                  
                  watcher
-                   .on('add' ,path =>  {     RagAfterModification(modification_count.push(path)) ;   console.log(` File added: ${path}`)})
+                   .on('add' ,path =>    {     RagAfterModification(modification_count.push(path)) ;   console.log(` File added: ${path}`)})
                    .on('change', path => {   RagAfterModification(modification_count.push(path)) ; console.log(` File changed : ${path}`)})
-                   .on('unlink', path => {   RagAfterModification(modification_count.push(path)) ; console.log(` File Removed: ${path}`)})
-                   .on('rename', path => {   RagAfterModification(modification_count.push(path)) ; console.log(` File renamed: ${path}`)});
+                   .on('unlink', path => {   RagAfterModification(modification_count.push(path)) ; console.log(` File Removed: ${path}`)});
                  
  
               }   
@@ -270,7 +269,7 @@ function activate(context) {
 
 
 
-               const val = await ollama_flow_response(message.value ,LLM_data ,CurrentFileAcess,message.mode);
+               const val = await ollama_flow_response(message.value ,LLM_data.replace(/^\s+|\s+$/gm, ''),CurrentFileAcess,message.mode);
               
             
                    
@@ -363,7 +362,7 @@ function activate(context) {
 
 
 
-                const val =  ollama_response(message.value ,LLM_data ,CurrentFileAcess,message.mode);
+                const val =  ollama_response(message.value ,LLM_data.replace(/^\s+|\s+$/gm, '') ,CurrentFileAcess,message.mode);
                
                 while(true){
                    

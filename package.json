@@ -24,14 +24,14 @@
             "chat-sidebar": [
                 {
                     "type": "webview",
-                    "id": "Nandhi",
+                    "id": "Code_Assitent",
                     "name": "Chat Messages"
                 }
             ]
         },
         "commands": [
             {
-                "command": "Nandhi",
+                "command": "Code_Assitent",
                 "title": "Chat: Add Message"
             }
         ]
@@ -50,6 +50,7 @@
         "@lancedb/lancedb": "^0.12.0",
         "@themaximalist/vectordb.js": "^0.1.2",
         "@xenova/transformers": "^2.17.2",
+        "chokidar": "^4.0.3",
         "chromadb": "^2.2.0",
         "fs": "^0.0.1-security",
         "marked": "^15.0.8",
