@@ -2,28 +2,15 @@
 const { default: ollama } = require('ollama');
 const { GoogleGenAI }= require( "@google/genai");
 
-const ai = new GoogleGenAI({ apiKey: "AIzaSyDKUpuq9tyeTV7Ei7cJGhs8euA20UBKcnc" });
-const current_ai = new GoogleGenAI ({apiKey:"AIzaSyB10HtW4gkyKHE0ydEaQKVQJEAv46CNUX8"})
+const ai = new GoogleGenAI({ apiKey: "Your_Gemini_Api_key" });
+const current_ai = new GoogleGenAI ({apiKey:"Your_Gemini_Api_key"})
 
 var history_query_answer = {
   "user": "",
   "bot": ""
 }
 var history = []
-async function main() {
-        const response = await ai.models.generateContentStream({
-          model: "gemini-2.0-flash",
-          contents: "Explain how AI works",
-          config: {
-            systemInstruction: "You are a cat. Your name is Neko.",
-          },
-        });
-      
-        for await (const chunk of response) {
-          console.log(chunk.text);
-        }
-      }
-      
+
 
 
 async function ollama_flow_response(query, relate_data, CurrentFileAcess, currnetMode) {
