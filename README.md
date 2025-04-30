@@ -37,8 +37,18 @@ A helpful workspace assistant built as a VS Code extension. It helps developers 
 ![Image](https://github.com/user-attachments/assets/ec43ef83-0bc4-49d2-91b2-54792ae7af06)
 
 ![Image](https://github.com/user-attachments/assets/b3e48412-2c93-49ab-9e5c-4cc823079d83)
-![Image](https://github.com/user-attachments/assets/3d3ad6f1-5995-4a61-965b-ca7707cbcea1)
+We can download the Flow diagrams
+![Image](https://github.com/user-attachments/assets/35a391a7-8bba-45d3-82a1-00dfb42eb3fe)
 
+Downloads : 
+--
+
+Image 1
+![Image](https://github.com/user-attachments/assets/8f19cd2e-b634-4770-8229-0accd75937fe)
+---
+
+Image 2 
+![Image](https://github.com/user-attachments/assets/c431044a-c977-4047-a958-9475d77e14f0)
 ---
 
 ## 🎥 Demo Video
