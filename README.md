@@ -43,11 +43,15 @@ A helpful workspace assistant built as a VS Code extension. It helps developers 
 
 ## 🎥 Demo Video
 
-> 🎬 _Add your video link or embed here_
 
-[![Watch Demo](https://img.youtube.com/vi/YOUR_VIDEO_ID_HERE/0.jpg)](https://www.youtube.com/watch?v=YOUR_VIDEO_ID_HERE)
+https://github.com/user-attachments/assets/e53ea2ce-60a1-4d98-9015-2cf0d780aac4
+
+
 
 ---
+
+
+
 
 ## 🧰 Installation
 
