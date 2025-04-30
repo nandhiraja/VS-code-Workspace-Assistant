@@ -33,8 +33,50 @@ function formatMessage(text) {
 const vscode = acquireVsCodeApi();
 
 
+let chatHistory= [] ;
 
 
+function saveState() {
+  // vscode.setState(state);
+}
+
+
+
+
+
+// @ts-ignore
+function restoreHistory(chatBox) {
+  for (const msg of chatHistory) {
+    const wrapper = document.createElement('message');
+
+    if (msg.sender === 'user') {
+      wrapper.id = 'user';
+      wrapper.innerHTML = `
+        <userHeader id="message-header">You:</userHeader>
+        <userMessage class="content">
+          ${formatMessage(msg.text)}
+        </userMessage>
+      `;
+    } else { // bot
+      wrapper.id = 'bot';
+      wrapper.innerHTML = `
+        <botHeader id="message-header">Assistant:</botHeader>
+        <botMessage id="${msg.id}" class="content message-content">
+          ${formatMessage(msg.text)}
+        </botMessage>
+      `;
+    }
+
+    chatBox.appendChild(wrapper);
+  }
+
+  chatBox.querySelectorAll('pre code').forEach(block => {
+    /* @ts-ignore */
+    hljs.highlightElement(block);
+  });
+
+  chatBox.scrollTop = chatBox.scrollHeight;
+}
 
 
 
@@ -56,19 +98,117 @@ window.onload = () => {
   
 
 
+         
+  var flowButton = document.querySelectorAll(".flow_Download")
+  console.log("List of all Flow buttons",flowButton);
+
+  
+
+
+  window.addEventListener('click', e => {
+    // @ts-ignore
+    console.log(e.target.className)
+
+    // @ts-ignore
+    console.log(e.target.className =="flow_Download")
+    // @ts-ignore
+    if(e.target.className =="flow_Download"){
+      console.log(flowButton)
+      // @ts-ignore
+      const element=document.getElementById(`mermaid-${e.target.id}`)  //mermaid-${e.target.id}
+
+      const scaleMultiple =1.5
+      const width = element.scrollWidth * scaleMultiple;
+      const height = element.scrollHeight * scaleMultiple;
+      console.log(element.scrollWidth  , " --- " , element.scrollHeight ," ::: ", width,"x",height )
+
+      
+      const options = {
+          quality: 0.95,
+          backgroundColor: '#ffffff',
+          width: width,
+          height: height,
+          pixelRatio: scaleMultiple,
+          style: {
+              transform: `scale(${scaleMultiple})`,
+              transformOrigin: 'top left',
+              width: `${element.scrollWidth}px`,
+              height: `${element.scrollHeight}px`
+          },
+          skipFonts: true, // Skip font cause CORS issue
+              filter: function(node) {
+                  if (node.tagName === 'LINK' && 
+                      node.getAttribute('rel') === 'stylesheet' && 
+                      node.getAttribute('href') && 
+                      node.getAttribute('href').startsWith('http')) {
+                      return false;
+                  }
+                  return true;
+              }
+      };
+      console.log(element)
+      setTimeout(() => {
+        console.log("Create a download link")
+
+          // @ts-ignore
+          htmlToImage.toPng(element, options)
+              .then(function(dataUrl) {
+                 console.log(" ---------Create a download link")
+                  const link = document.createElement('a');
+                  link.download = `Workspace Flow.png`;
+                  link.href = dataUrl;
+                  link.click();
+                  console.log("----------Image downloaded successfully!");
+                
+              })
+              .catch(function(error) {
+                  console.error('Error generating image:', error);
+                  console.log("Image downloaded error!");
+              });
+      }, 500);
+     
+
+
+    }
+
+
+   })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
        // ========================================================restore saved chat=============================================
 
                 let CurrentFile="All Files";
               
-               
+                if (chatHistory.length) {
+                 restoreHistory(chatBox);
+                }
 
          //==========================================================================================================
 
 
           sendBtn.addEventListener('click', () => {
             console.log('Send button clicked : ' , CurrentFile );
+             flowButton = document.querySelectorAll(".flow_Download")
+
             sendMessage(input, chatBox, loading ,currentFile,CurrentFile)});
         
 
@@ -98,6 +238,8 @@ window.onload = () => {
           input.addEventListener('keypress', e => {
             if (e.key === 'Enter' && !e.shiftKey) {
               e.preventDefault();
+              flowButton = document.querySelectorAll(".flow_Download")
+
               sendMessage(input, chatBox, loading,currentFile,CurrentFile);
             }
            });        
@@ -128,6 +270,8 @@ window.onload = () => {
                   console.log("Backend message: Im execute the mermaidContent function");
                   currnetMode =["default"];
                   mermaidContent(msg.value, chatBox, loading)
+                  flowButton = document.querySelectorAll(".flow_Download")
+
                }
                }
         
@@ -218,6 +362,9 @@ async function sendMessage(input, chatBox, loading, currentFile ,CurrentFile) {
                `;
         chatBox.appendChild(userEl);
 
+        chatHistory.push({ sender: 'user', text });
+        saveState();
+
 
         // --------------------------------------------------------------------------------------------------------------------
 
@@ -243,10 +390,12 @@ async function sendMessage(input, chatBox, loading, currentFile ,CurrentFile) {
 
     botWrapper.innerHTML = ` <botHeader id="message-header">Assistant:</botHeader>
     <botMessage id="${botId}" class="content message-content">     </botMessage>
+                  
+    <button id=${currnetFLowId} class ="flow_Download" >Download</button>
 
     <flowcontainer>
-             <flowWraper  class="flowWraper">
-             <flow id=${currnetFLowId} class="mermaid">
+             <flowWraper  id="mermaid-${currnetFLowId}" class="flowWraper" >
+             <flow  id="mermaidflow-${currnetFLowId}" class="mermaid">
              </flow>
               </flowWraper>
     </flowcontainer>
@@ -259,18 +408,16 @@ async function sendMessage(input, chatBox, loading, currentFile ,CurrentFile) {
   }
 
    if(currentFile!=="" && currentFile.checked){
-    botWrapper.innerHTML += ` <Response class="currentFile" style="font-size : 10px ; 
-                                padding : 12px 12px" >Current response based on : <mark style ="background-color:  rgb(27, 27, 27);  
-                                font-weight: bold ; background-color:  rgb(207, 204, 14) ; font-size : 10px ; padding : 1px 1px" > ${CurrentFile} </mark></Response>`;
+    botWrapper.innerHTML += ` <Response class="currentFile" style="font-size : 10px ; ; padding : 12px 12px" >Current response based on : <mark style ="background-color:  rgb(27, 27, 27);  font-weight: bold ; background-color:  rgb(207, 204, 14) ; font-size : 10px ; padding : 1px 1px" > ${CurrentFile} </mark></Response>`;
     }
     if(currentFile!=="" && !currentFile.checked){
-      botWrapper.innerHTML += ` <Response class="currentFile" style="font-size : 10px ; 
-       padding : 12px 12px" >Current response based on : <mark style ="background-color:  rgb(27, 27, 27); 
-        font-weight: bold ; background-color:  rgb(207, 204, 14) ; font-size : 10px ; padding : 1px 1px" > ${"All files"} </mark></Response>`;
+      botWrapper.innerHTML += ` <Response class="currentFile" style="font-size : 10px ; ; padding : 12px 12px" >Current response based on : <mark style ="background-color:  rgb(27, 27, 27);  font-weight: bold ; background-color:  rgb(207, 204, 14) ; font-size : 10px ; padding : 1px 1px" > ${"All files"} </mark></Response>`;
       }
 
   chatBox.appendChild(botWrapper);
 
+  chatHistory.push({ sender: 'bot', text: '', id: botId });
+  saveState();
 
   chatBox.scrollTop = chatBox.scrollHeight;
 
@@ -296,6 +443,7 @@ function mermaidContent(chunk, chatBox, loading){
     loading.style.display = 'none';
     chatBox.innerHTML+=`<hr>`
   
+     saveState();
      return;
     }
       if (fullMessage === '') {
@@ -303,7 +451,7 @@ function mermaidContent(chunk, chatBox, loading){
       }
          
       fullMessage += chunk;
-      const botMsgEl = document.getElementById(currnetFLowId);
+      const botMsgEl = document.getElementById(`mermaidflow-${currnetFLowId}`);
       if (!botMsgEl) {
         console.log("No botMsgEl found");
         return};  
@@ -332,6 +480,7 @@ function handleBackendStream(chunk, chatBox, loading) {
     loading.style.display = 'none';
     chatBox.innerHTML+=`<hr>`
   
+     saveState();
      return;
     }
 
@@ -361,5 +510,8 @@ function handleBackendStream(chunk, chatBox, loading) {
 
   chatBox.scrollTop = chatBox.scrollHeight;
 
- 
+  const entry = chatHistory.find(e => e.id === currentMessageId);
+  if (entry) {
+    entry.text = fullMessage;
+  }
 }
