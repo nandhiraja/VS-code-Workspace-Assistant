@@ -442,7 +442,7 @@ function activate(context) {
 
 
 function getWebviewContent(scriptUri) {
-    return `<!DOCTYPE html>
+     return `<!DOCTYPE html>
 <html lang="en">
 <head>
     <!DOCTYPE html>
@@ -455,17 +455,22 @@ function getWebviewContent(scriptUri) {
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/styles/atom-one-dark.min.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.8.0/highlight.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/mermaid/10.6.1/mermaid.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
+
   <script> mermaid.initialize({
     startOnLoad: true,
     theme: 'default',
+
     flowchart: {
         useMaxWidth: false,
         htmlLabels: true,
-        curve: 'linear',
+        securityLevel: 'loose',
+
+        curve: 'basis',
         flowchart: {
             useMaxWidth: false,
             htmlLabels: true,
-            curve: 'linear',
+            curve: 'basis',
             nodeSpacing: 200,
             rankSpacing: 200,
             padding: 300
@@ -625,7 +630,7 @@ function getWebviewContent(scriptUri) {
         }
 
 
-        button{
+        #button{
           margin-top: 4px;
           margin-left: 10px;
            height: 35px;
@@ -641,7 +646,7 @@ function getWebviewContent(scriptUri) {
 
         }
 
-        button:hover{
+        #button:hover{
           background-color: rgb(212, 63, 17);
           color: aliceblue;
         }
@@ -852,7 +857,16 @@ file{
   
     }
 
-
+     
+   .flow_Download{
+    cursor: pointer;
+    color : rgb(26, 25, 25);
+    background-color: #e4dddd;
+    display: flex;
+    align-self: self-end;
+    
+    
+   }
     </style>
     <body>
     
@@ -874,49 +888,13 @@ file{
         <chatArea id="chatArea">
             <message id="bot" >
               <botHeader id="message-header">Assistent : </botHeader>
-              <botMessage id="botMessage" class="content" >Hi, How can I Assist you ?    </botMessage>         </botMessage>
+              <botMessage id="botMessage" class="content" >Hi, How can I Assist you ?    </botMessage>
 
-              
-                             
-              
-              
+       
               
             </message>
           <hr>
-         <!-- <message id="user" >
-              <userHeader id="message-header">Asistent : </userHeader>
-              <userMessage id="userMessage" class="content" >Hai how can i Assist you</userMessage>
-            </message>
-<message id="bot" >
-              <botHeader id="message-header">Asistent : </botHeader>
-              <botMessage id="botMessage" class="content" >Hai how can i Assist you</botMessage>
-            </message> 
-            <dash>----------------------------------------------------------------------------------------------------------</dash>
-            <message id="user" >
-              <userHeader id="message-header">Asistent : </userHeader>
-              <userMessage id="userMessage" class="content" >Hai how can i Assist you</userMessage>
-            </message>
- <message id="bot" >
-  <botHeader id="message-header">Asistent : </botHeader>
-  <botMessage id="botMessage" class="content" >Hai how can i Assist you</botMessage>
-</message>
-<dash>----------------------------------------------------------------------------------------------------------</dash>
-<message id="user" >
-  <userHeader id="message-header">Asistent : </userHeader>
-  <userMessage id="userMessage" class="content" >Hai how can i Assist you</userMessage>
-</message>
-
-<message id="bot" >
-  <botHeader id="message-header">Asistent : </botHeader>
-  <botMessage id="botMessage" class="content message-content" >Hai how can i Assist you</botMessage>
-</message>
-<dash>----------------------------------------------------------------------------------------------------------</dash> -->
-
-
-<!--------------------------------------------------------------------------------------------->
-
-
-
+     
 
         </chatArea>
    
